@@ -1,50 +1,51 @@
 import axios from "axios"
 import { useEffect, useState } from "react"
 
-const baseURL = import.meta.env.VITE_REACT_API_URI;
-// const baseURL = "http://localhost:8080/api";
-
 const useFetch = (endpoint, includeCredentials = false) => {
-  const [loading, setLoading] = useState(false)
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false);
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
 
-  const url = `${baseURL}/${endpoint}`;
+  const url = endpoint ? `${baseURL}/${endpoint}` : baseURL; // Check if endpoint is provided
 
   useEffect(() => {
-    setLoading(true)
-    const axiosConfig = includeCredentials ? { withCredentials: true } : {};
-    axios
-      .get(url, axiosConfig)
-      .then((response) => {
-        setData(response.data)
-      })
-      .catch((err) => {
-        setError(err.response ? err.response.data : err.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
-    
-  }, [url, includeCredentials])
+    if (!endpoint) console.log("1234567890");
+    ; // Do nothing if endpoint is missing or undefined
 
-  function refetch(){
-    setLoading(true)
+    setLoading(true);
     const axiosConfig = includeCredentials ? { withCredentials: true } : {};
     axios
       .get(url, axiosConfig)
       .then((response) => {
-        setData(response.data)
+        setData(response.data);
       })
       .catch((err) => {
-        setError(err.response ? err.response.data : err.message)
+        setError(err.response ? err.response.data : err.message || 'An unknown error occurred');
       })
       .finally(() => {
-        setLoading(false)
+        setLoading(false);
+      });
+  }, [url, includeCredentials, endpoint]); // Add `endpoint` to the dependency array
+
+  function refetch() {
+    if (!endpoint) return; // Do nothing if endpoint is missing or undefined
+
+    setLoading(true);
+    const axiosConfig = includeCredentials ? { withCredentials: true } : {};
+    axios
+      .get(url, axiosConfig)
+      .then((response) => {
+        setData(response.data);
       })
+      .catch((err) => {
+        setError(err.response ? err.response.data : err.message || 'An unknown error occurred');
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   }
-  
-  return { data, loading, error, refetch }
-}
 
-export default useFetch
+  return { data, loading, error, refetch };
+};
+
+export default useFetch;
