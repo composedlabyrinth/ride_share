@@ -9,7 +9,7 @@ import userRoute from "./routes/user.routes.js"
 import rideRoute from "./routes/ride.routes.js"
 
 const app = express()
-const PORT = 8080;
+const PORT = 8080
 
 dotenv.config()
 
@@ -24,10 +24,10 @@ const connectDB = (url) => {
 
 //middlewares
 app.use(cors({
-    origin: process.env.ORIGIN,
-    credentials: true,
-    // allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
-  }
+  origin: ["http://localhost:5173", "http://127.0.0.1:5173"],
+  credentials: true,
+  allowedMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS']
+}
 ))
 app.use(cookieParser())
 app.use(express.json())
@@ -37,7 +37,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/rides", rideRoute);
 
 
-app.use((err, req, res, next)=>{
+app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;
   const errorMessage = err.message || "Something went wrong";
   return res.status(errorStatus).json({
